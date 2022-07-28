@@ -1,0 +1,9 @@
+.DS_Store
+.env
+error.log
+env/
+.vscode/
+.flaskenv
+*.pyc
+*.pyo
+.cache/
