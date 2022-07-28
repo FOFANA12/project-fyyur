@@ -28,6 +28,16 @@ migrate = Migrate(app, db)
 # Models.
 #----------------------------------------------------------------------------#
 
+
+# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+
+venue_artist = db.Table(
+    "venue_artist",
+    db.Column("venue_id", db.Integer, db.ForeignKey("Venue.id"), primary_key=True),
+    db.Column("artist_id", db.Integer, db.ForeignKey("Artist.id"), primary_key=True),
+    db.Column('start_time', db.DateTime, nullable=False)
+)
+
 class Venue(db.Model):
     __tablename__ = 'Venue'
 
@@ -43,7 +53,7 @@ class Venue(db.Model):
     website_link = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
-
+    artists = db.relationship('Artist', secondary=venue_artist, backref=db.backref('venues', lazy=True))
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 class Artist(db.Model):
@@ -62,15 +72,6 @@ class Artist(db.Model):
     facebook_link = db.Column(db.String(120))
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
-
-venue_artist = db.Table(
-    "venue_artist",
-    db.Column("venue_id", db.Integer, db.ForeignKey("Venue.id"), primary_key=True),
-    db.Column("artist_id", db.Integer, db.ForeignKey("Artist.id"), primary_key=True),
-    db.Column('start_time', db.DateTime, nullable=False)
-)
 
 #----------------------------------------------------------------------------#
 # Filters.
