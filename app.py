@@ -14,7 +14,6 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from datetime import datetime
-import sys
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -332,10 +331,24 @@ def create_venue_submission():
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
+  try:
+    venue = Venue.query.get(venue_id)
+    name = venue.name
+    for show in venue.shows:
+      db.session.delete(show)
+      
+    db.session.delete(venue)
+    db.session.commit()
+    
+    flash('Venue ' + name + ' was successfully deleted!')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Venue ' + name + ' could not be deleted.')
+  finally:
+    db.session.close()
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  return render_template('pages/home.html')
 
 #  Artists
 #  ----------------------------------------------------------------
