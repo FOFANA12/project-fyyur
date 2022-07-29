@@ -80,15 +80,15 @@ class Show(db.Model):
 #----------------------------------------------------------------------------#
 
 def format_datetime(value, format='medium'):
-  if isinstance(value, str):
+  #if isinstance(value, str):
     date = dateutil.parser.parse(value)
     if format == 'full':
         format="EEEE MMMM, d, y 'at' h:mma"
     elif format == 'medium':
         format="EE MM, dd, y h:mma"
     return babel.dates.format_datetime(date, format, locale='en')
-  else:
-    date = value
+  #else:
+    #date = value
 
 app.jinja_env.filters['datetime'] = format_datetime
 
@@ -324,8 +324,6 @@ def show_artist(artist_id):
   # TODO: replace with real artist data from the artist table, using artist_id
 
   artist = Artist.query.get(artist_id)
-  #past_shows = Show.query.filter(Show.artist_id==artist.id).filter(Show.start_time<datetime.now()).all()
-  #upcoming_shows = Show.query.filter(Show.artist_id==artist.id).filter(Show.start_time>datetime.now()).all()
   
   past_shows = []
   upcoming_shows = []
@@ -336,14 +334,14 @@ def show_artist(artist_id):
         "venue_id": show.venue_id,
         "venue_name": show.venue.name,
         "venue_image_link": show.venue.image_link,
-        "start_time": show.start_time
+        "start_time": show.start_time.isoformat(),
       })
     if show.start_time > datetime.now():
       upcoming_shows.append({
         "venue_id": show.venue_id,
         "venue_name": show.venue.name,
         "venue_image_link": show.venue.image_link,
-        "start_time": show.start_time
+        "start_time": show.start_time.isoformat(),
       })
   
   
@@ -523,7 +521,6 @@ def create_artist_submission():
       seeking_description=request.form['seeking_description'],
       facebook_link=request.form['facebook_link']
     )
-    print(request.form['genres'], file=sys.stdout)
     db.session.add(artist)
     db.session.commit()
     
@@ -546,6 +543,19 @@ def create_artist_submission():
 def shows():
   # displays list of shows at /shows
   # TODO: replace with real venues data.
+  data = []
+  shows = Show.query.order_by(Show.id).all()
+  for show in shows:
+    data.append({
+      "venue_id": show.venue_id,
+      "venue_name": show.venue.name,
+      "artist_id": show.artist.id,
+      "artist_name": show.artist.name,
+      "artist_image_link": show.artist.image_link,
+      "start_time": show.start_time.isoformat(),
+    })
+    
+  '''
   data=[{
     "venue_id": 1,
     "venue_name": "The Musical Hop",
@@ -582,6 +592,7 @@ def shows():
     "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
     "start_time": "2035-04-15T20:00:00.000Z"
   }]
+  '''
   return render_template('pages/shows.html', shows=data)
 
 @app.route('/shows/create')
