@@ -110,12 +110,21 @@ def venues():
   data = []
   cities = Venue.query.distinct('city')
   for city in cities:
+    venues = Venue.query.filter(Venue.city==city.city).order_by(Venue.id).all()
+    city_venues = []
+    for venue in venues:
+      num_upcoming_shows = Show.query.filter(Show.venue_id==venue.id).filter(Show.start_time>datetime.now()).count()
+      city_venues.append({
+        "id": venue.id,
+        "name": venue.name,
+        "num_upcoming_shows": num_upcoming_shows,
+      })
     data.append({
       "city": city.city,
       "state": city.state,
-      "venues": Venue.query.filter(Venue.city==city.city).order_by(Venue.id).all()
+      "venues": city_venues
     })
-    
+   
   '''
     data=[{
       "city": "San Francisco",
