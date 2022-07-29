@@ -580,18 +580,9 @@ def edit_artist_submission(artist_id):
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   venue = Venue.query.get(venue_id)
-  form = VenueForm()
-  form.name.data = venue.name
-  form.city.data = venue.city
-  form.state.data = venue.state
-  form.address.data = venue.address
-  form.phone.data = venue.phone
+  form = VenueForm(obj=venue)
   form.genres.data = venue.genres
-  form.image_link.data = venue.image_link
-  form.facebook_link.data = venue.facebook_link
-  form.website_link.data = venue.website_link
-  form.seeking_talent.data = venue.seeking_talent 
-  form.seeking_description.data = venue.seeking_description
+  
   # TODO: populate form with values from venue with ID <venue_id>
   return render_template('forms/edit_venue.html', form=form, venue=venue)
 
@@ -602,17 +593,9 @@ def edit_venue_submission(venue_id):
   try:
   
     venue = Venue.query.get(venue_id)
-    venue.name=request.form['name']
-    venue.city=request.form['city']
-    venue.state=request.form['state'] 
-    venue.address=request.form['address'] 
-    venue.phone=request.form['phone'] 
-    venue.genres=request.form['genres'] 
-    venue.image_link=request.form['image_link']
-    venue.facebook_link=request.form['facebook_link']
-    venue.website_link=request.form['website_link']
-    venue.seeking_talent= 'seeking_talent' in request.form
-    venue.seeking_description=request.form['seeking_description']
+    form = VenueForm(formdata=request.form, obj=venue)
+    form.populate_obj(venue)
+   
     
     db.session.commit()
     flash('Venue ' + request.form['name'] + ' was successfully updated!')
