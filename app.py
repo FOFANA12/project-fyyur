@@ -161,6 +161,48 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
+  
+  venue = Venue.query.get(venue_id)
+  
+  past_shows = []
+  upcoming_shows = []
+  
+  for show in venue.shows:
+    if show.start_time < datetime.now():
+      past_shows.append({
+        "artist_id": show.artist_id,
+        "artist_name": show.artist.name,
+        "artist_image_link": show.artist.image_link,
+        "start_time": show.start_time.isoformat(),
+      })
+    if show.start_time > datetime.now():
+      upcoming_shows.append({
+        "artist_id": show.artist_id,
+        "artist_name": show.artist.name,
+        "artist_image_link": show.artist.image_link,
+        "start_time": show.start_time.isoformat(),
+      })
+  
+  data = {
+    "id": venue.id,
+    "name": venue.name,
+    "genres": venue.genres,
+    "address": venue.address,
+    "city": venue.city,
+    "state": venue.state,
+    "phone": venue.phone,
+    "facebook_link": venue.facebook_link,
+    "seeking_talent": venue.seeking_talent,
+    "seeking_description": venue.seeking_description,
+    "image_link": venue.image_link,
+    "website": venue.website_link,
+    "past_shows": past_shows,
+    "upcoming_shows": upcoming_shows,
+    "past_shows_count": len(past_shows),
+    "upcoming_shows_count": len(upcoming_shows),
+  }
+  
+  '''
   data1={
     "id": 1,
     "name": "The Musical Hop",
@@ -239,6 +281,7 @@ def show_venue(venue_id):
     "upcoming_shows_count": 1,
   }
   data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
+  '''
   return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
