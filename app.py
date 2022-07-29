@@ -595,7 +595,6 @@ def edit_venue_submission(venue_id):
     venue = Venue.query.get(venue_id)
     form = VenueForm(formdata=request.form, obj=venue)
     form.populate_obj(venue)
-   
     
     db.session.commit()
     flash('Venue ' + request.form['name'] + ' was successfully updated!')
