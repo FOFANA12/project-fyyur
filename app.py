@@ -701,11 +701,9 @@ def create_show_submission():
   # TODO: insert form data as a new Show record in the db, instead
 
   try:
-    show = Show(
-      venue_id=request.form['venue_id'],
-      artist_id=request.form['artist_id'],
-      start_time=request.form['start_time'], 
-    )
+    show = Show()
+    form = ShowForm(formdata=request.form)
+    form.populate_obj(show)
       
     db.session.add(show)
     db.session.commit()
