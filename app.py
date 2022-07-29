@@ -537,17 +537,8 @@ def show_artist(artist_id):
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
   artist = Artist.query.get(artist_id)
-  form = ArtistForm()
-  form.name.data=artist.name
-  form.city.data=artist.city
-  form.state.data=artist.state 
-  form.phone.data=artist.phone 
+  form = ArtistForm(obj=artist)
   form.genres.data=artist.genres 
-  form.image_link.data=artist.image_link
-  form.website_link.data=artist.website_link
-  form.seeking_venue.data= artist.seeking_venue
-  form.seeking_description.data=artist.seeking_description
-  form.facebook_link.data=artist.facebook_link
   
   # TODO: populate form with fields from artist with ID <artist_id>
   return render_template('forms/edit_artist.html', form=form, artist=artist)
@@ -558,16 +549,9 @@ def edit_artist_submission(artist_id):
   # artist record with ID <artist_id> using the new attributes
   try:
     artist = Artist.query.get(artist_id)
-    artist.name=request.form['name']
-    artist.city=request.form['city']
-    artist.state=request.form['state'] 
-    artist.phone=request.form['phone'] 
-    artist.genres=request.form['genres'] 
-    artist.image_link=request.form['image_link']
-    artist.website_link=request.form['website_link']
-    artist.seeking_venue='seeking_venue' in request.form
-    artist.seeking_description=request.form['seeking_description']
-    artist.facebook_link=request.form['facebook_link']
+    form = ArtistForm(formdata=request.form, obj=artist)
+    form.populate_obj(artist)
+    
     db.session.commit()
     flash('Artist ' + request.form['name'] + ' was successfully updated!')
   except:
