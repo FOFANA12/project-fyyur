@@ -592,18 +592,10 @@ def create_artist_submission():
   # TODO: insert form data as a new Artist record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
   try:
-    artist = Artist(
-      name=request.form['name'],
-      city=request.form['city'],
-      state=request.form['state'], 
-      phone=request.form['phone'], 
-      genres=request.form['genres'], 
-      image_link=request.form['image_link'],
-      website_link=request.form['website_link'],
-      seeking_venue= 'seeking_venue' in request.form,
-      seeking_description=request.form['seeking_description'],
-      facebook_link=request.form['facebook_link']
-    )
+    artist = Artist()
+    form = ArtistForm(formdata=request.form)
+    form.populate_obj(artist)
+
     db.session.add(artist)
     db.session.commit()
     
