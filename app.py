@@ -635,13 +635,18 @@ def create_show_submission():
   try:
     show = Show()
     form = ShowForm(formdata=request.form)
-    form.populate_obj(show)
+    
+    check_availability = AvailabilityArtist.query.filter(AvailabilityArtist.start_time<=form.start_time.data).filter(AvailabilityArtist.end_time>=form.start_time.data).first()
+    if check_availability:
+      form.populate_obj(show)
       
-    db.session.add(show)
-    db.session.commit()
+      db.session.add(show)
+      db.session.commit()
       
-    # on successful db insert, flash success
-    flash('Show was successfully listed!')
+      # on successful db insert, flash success
+      flash('Show was successfully listed!')
+    else:
+      flash('An error has occurred. The artist is not available.')
   except:
     db.session.rollback()
     # TODO: on unsuccessful db insert, flash an error instead.
