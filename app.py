@@ -12,8 +12,8 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
-from datetime import datetime
-from models import db, Venue, Artist, Show
+from datetime import datetime, timedelta
+from models import AvailabilityArtist, db, Venue, Artist, Show
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -648,6 +648,35 @@ def create_show_submission():
     # e.g., flash('An error occurred. Show could not be listed.')
     # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
     flash('An error occurred. Show could not be listed.')
+  finally:
+    db.session.close()
+  return render_template('pages/home.html')
+
+@app.route('/artist/availabilities/create', methods=['GET'])
+def create_availability_artist_form():
+  form = AvailabilityArtistForm()
+  form.start_time.data = datetime.today()
+  form.end_time.data = datetime.today() + timedelta(hours=1)
+  return render_template('forms/new_availability_artist.html', form=form)
+
+@app.route('/artist/availabilities/create', methods=['POST'])
+def create_availability_artist_submission():
+  # called to create new availability in the db, upon submitting new availability listing form
+  # TODO: insert form data as a new Show record in the db, instead
+
+  try:
+    availability_artist = AvailabilityArtist()
+    form = AvailabilityArtistForm(formdata=request.form)
+    form.populate_obj(availability_artist)
+      
+    db.session.add(availability_artist)
+    db.session.commit()
+      
+    # on successful db insert, flash success
+    flash('Availability was successfully listed!')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Availability could not be listed.')
   finally:
     db.session.close()
   return render_template('pages/home.html')

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
@@ -237,3 +237,17 @@ class ArtistForm(Form):
             'seeking_description'
      )
 
+class AvailabilityArtistForm(Form):
+    artist_id = StringField(
+        'artist_id'
+    )
+    start_time = DateTimeField(
+        'start_time',
+        validators=[DataRequired()],
+        default= datetime.today()
+    )
+    end_time = DateTimeField(
+        'end_time',
+        validators=[DataRequired()],
+        default= datetime.today() + timedelta(hours=1)
+    )
