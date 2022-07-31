@@ -38,7 +38,7 @@
 			<tbody>
 				{% for artist in artists %}
 					<tr>
-						<td>{{ artist.name }}</td>
+						<td><a href="/artists/{{ artist.id }}">{{ artist.name }}</a></td>
 						<td>{{ artist.city }}</td>
 						<td>{{ artist.state }}</td>
 						<td>{{ artist.phone }}</td>
@@ -64,7 +64,7 @@
 			<tbody>
 				{% for venue in venues %}
 					<tr>
-						<td>{{ venue.name }}</td>
+						<td><a href="/venues/{{ venue.id }}">{{ venue.name }}</a></td>
 						<td>{{ venue.city }}</td>
 						<td>{{ venue.state }}</td>
 						<td>{{ venue.address }}</td>
