@@ -276,14 +276,10 @@ def show_artist(artist_id):
         "start_time": show.start_time.isoformat(),
       })
   
-  
-  #past_shows = Show.query.filter(Show.artist_id==artist.id).all()
-  #upcoming_shows = Show.query.filter(Show.artist_id==artist.id).all()
-  
   data = {
     "id": artist.id,
     "name": artist.name,
-    "genres": ["Rock n Roll"],
+    "genres": artist.genres.split(","),
     "city": artist.city,
     "state": artist.state,
     "phone": artist.phone,
@@ -318,6 +314,7 @@ def edit_artist_submission(artist_id):
     artist = Artist.query.get(artist_id)
     form = ArtistForm(formdata=request.form, obj=artist)
     form.populate_obj(artist)
+    artist.genres = ', '.join(form.genres.data)
     
     db.session.commit()
     flash('Artist ' + request.form['name'] + ' was successfully updated!')
@@ -374,7 +371,8 @@ def create_artist_submission():
     artist = Artist()
     form = ArtistForm(formdata=request.form)
     form.populate_obj(artist)
-
+    artist.genres = ', '.join(form.genres.data)
+ 
     db.session.add(artist)
     db.session.commit()
     
