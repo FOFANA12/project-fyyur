@@ -1,11 +1,26 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Fyyur | Venues{% endblock %}
 {% block content %}
+<style>
+      .items li .delete-icon {
+        color: orange;
+        cursor: pointer;
+		float:left;
+		margin-top:7px
+      }
+	  .items li .delete-icon:hover {
+        color: red;
+      }
+	  .item, h5{
+		display: inline-block;
+	  }
+</style>
 {% for area in areas %}
-<h3>{{ area.city }}, {{ area.state }}</h3>
+	<h3>{{ area.city }}, {{ area.state }}</h3>
 	<ul class="items">
 		{% for venue in area.venues %}
 		<li>
+			<i class="fas fa-trash delete-icon" data-id="{{ venue.id }}" title="Delete this line"></i>
 			<a href="/venues/{{ venue.id }}">
 				<i class="fas fa-music"></i>
 				<div class="item">
@@ -16,4 +31,19 @@
 		{% endfor %}
 	</ul>
 {% endfor %}
+	<script>
+		const deleteIcons = document.querySelectorAll('.delete-icon');
+		for (let i = 0; i < deleteIcons.length; i++) {
+			const icon = deleteIcons[i];
+			icon.onclick = function(e) {
+				const venueId = e.target.dataset['id'];
+				fetch('/venues/' + venueId, {
+					method: 'DELETE'
+				})
+				.then(function() {
+					window.location.href = '/';
+				})
+			}
+		}
+	</script>
 {% endblock %}

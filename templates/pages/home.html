@@ -29,6 +29,7 @@
 		<table class="table">
 			<thead>
 			<tr>
+				<th>ID</th>
 				<th>Name</th>
 				<th>City</th>
 				<th>State</th>
@@ -38,10 +39,15 @@
 			<tbody>
 				{% for artist in artists %}
 					<tr>
+						<td><a href="/artists/{{ artist.id }}">{{ artist.id }}</a></td>
 						<td><a href="/artists/{{ artist.id }}">{{ artist.name }}</a></td>
 						<td>{{ artist.city }}</td>
 						<td>{{ artist.state }}</td>
 						<td>{{ artist.phone }}</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="5" class="text-center"> No data </td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -54,6 +60,7 @@
 		<table class="table">
 			<thead>
 			<tr>
+				<th>ID</th>
 				<th>Name</th>
 				<th>City</th>
 				<th>State</th>
@@ -64,11 +71,16 @@
 			<tbody>
 				{% for venue in venues %}
 					<tr>
+						<td><a href="/venues/{{ venue.id }}">{{ venue.id }}</a></td>
 						<td><a href="/venues/{{ venue.id }}">{{ venue.name }}</a></td>
 						<td>{{ venue.city }}</td>
 						<td>{{ venue.state }}</td>
 						<td>{{ venue.address }}</td>
 						<td>{{ venue.phone }}</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6" class="text-center"> No data </td>
 					</tr>
 				{% endfor %}
 			</tbody>
