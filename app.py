@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------------#
 
 import json
+from unicodedata import name
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
@@ -14,6 +15,7 @@ from flask_wtf import Form
 from forms import *
 from datetime import datetime, timedelta
 from models import AvailabilityArtist, db, Venue, Artist, Show
+from seeder import init_data
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -23,6 +25,8 @@ moment = Moment(app)
 app.config.from_object('config')
 db.init_app(app)
 migrate = Migrate(app, db)
+app.cli.add_command(init_data)
+
 # TODO: connect to a local postgresql database
 
 #----------------------------------------------------------------------------#
@@ -341,7 +345,11 @@ def search_artists():
   # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
   # search for "band" should return "The Wild Sax Band".
   search_term = request.form['search_term']
-  artists = Artist.query.filter(Artist.name.ilike('%' + search_term + '%')).all()
+  artists = Artist.query.filter(db.or_(
+                                  Artist.name.ilike('%' + search_term + '%'),
+                                  Artist.city.like('%' + search_term + '%'),
+                                  Artist.state.like('%' + search_term + '%'),
+                                )).all()
   data = []
   
   for artist in artists:
