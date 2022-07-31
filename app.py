@@ -140,7 +140,7 @@ def show_venue(venue_id):
   data = {
     "id": venue.id,
     "name": venue.name,
-    "genres": venue.genres,
+    "genres": venue.genres.split(","),
     "address": venue.address,
     "city": venue.city,
     "state": venue.state,
@@ -174,6 +174,7 @@ def create_venue_submission():
     venue = Venue()
     form = VenueForm(formdata=request.form)
     form.populate_obj(venue)
+    venue.genres = ', '.join(form.genres.data)
       
     db.session.add(venue)
     db.session.commit()
@@ -345,6 +346,7 @@ def edit_venue_submission(venue_id):
     venue = Venue.query.get(venue_id)
     form = VenueForm(formdata=request.form, obj=venue)
     form.populate_obj(venue)
+    venue.genres = ', '.join(form.genres.data)
     
     db.session.commit()
     flash('Venue ' + request.form['name'] + ' was successfully updated!')

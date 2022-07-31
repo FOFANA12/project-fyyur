@@ -124,7 +124,7 @@ def init_data():
         for data in dataVenue:
             venue = Venue(
                 name=data['name'],
-                genres=data['genres'],
+                genres=', '.join(data['genres']),
                 address=data['address'],
                 city=data['city'],
                 state=data['state'],
@@ -143,7 +143,7 @@ def init_data():
                 city=data['city'],
                 state=data['state'],
                 phone=data['phone'],
-                genres=data['genres'],
+                genres=', '.join(data['genres']),
                 image_link=data['image_link'],
                 website_link=data['website'],
                 seeking_venue=data['seeking_venue'],
