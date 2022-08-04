@@ -1,6 +1,6 @@
 import click
 from flask.cli import with_appcontext
-from models import AvailabilityArtist, db, Venue, Artist, Show
+from models import db, Venue, Artist, Show
 
 # data
 dataVenue=[
@@ -117,7 +117,6 @@ dataArtist=[
 def init_data():
     try:
         Show.query.filter(Show.id>0).delete()
-        AvailabilityArtist.query.filter(AvailabilityArtist.id>0).delete()
         Venue.query.filter(Venue.id>0).delete()
         Artist.query.filter(Artist.id>0).delete()
         
